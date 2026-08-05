@@ -3,7 +3,16 @@
   "version": "1.0.0",
   "description": "InfraMap backend API",
   "scripts": {
-    "dev": "node index.js"
+    "dev": "tsx src/index.ts"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^5.11.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.5",
+    "typescript": "^7.0.2"
+  }
 }
