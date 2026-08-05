@@ -1,0 +1,7 @@
+{
+  "name": "@inframap/shared",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types",
+  "main": "index.ts",
+  "license": "ISC"
+}

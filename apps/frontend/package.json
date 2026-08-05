@@ -1,0 +1,9 @@
+{
+  "name": "@inframap/frontend",
+  "version": "1.0.0",
+  "description": "InfraMap frontend app",
+  "scripts": {
+    "dev": "vite"
+  },
+  "license": "ISC"
+}
