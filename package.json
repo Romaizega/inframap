@@ -1,0 +1,14 @@
+{
+  "name": "inframap",
+  "version": "1.0.0",
+  "description": "Real-time infrastructure monitoring platform",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev": "pnpm run dev:frontend & pnpm run dev:backend"
+  },
+  "keywords": [],
+  "author": "Roman Izegov",
+  "license": "ISC"
+}
