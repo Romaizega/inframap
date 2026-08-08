@@ -1,0 +1,60 @@
+services:
+  db:
+    image: postgres:16-alpine
+    mem_limit: 128m
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: inframap
+      POSTGRES_PASSWORD: inframap
+      POSTGRES_DB: inframap
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inframap -d inframap"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    mem_limit: 128m
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: ./apps/backend
+    mem_limit: 384m
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file: .env
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./apps/backend/uploads:/app/uploads
+    
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    mem_limit: 128m
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    
+volumes:
+  pg_data:
+  redis_data:
