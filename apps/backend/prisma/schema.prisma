@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organization {
+  id String @id @default(uuid())
+  name String
+  country String
+  city String
+  phone_number String @map("phone_number")
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+  users User[]
+  location Location[]
+}
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  username String @unique
+  first_name String 
+  last_name String
+  role String
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+  organizationId String
+  organization Organization @relation (fields: [organizationId], references: [id])
+  maintenanceLogs MaintenanceLog[]
+}
+
+model Location {
+  id String @id @default(uuid())
+  site String
+  building String
+  floor String
+  latitude Float
+  longitude Float
+  accessinstruction String
+  description String
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+  organizationId String
+  organization Organization @relation (fields: [organizationId], references: [id])
+  devices Device[]
+  photos PhotoSite[]
+}
+
+enum DeviceStatus {
+  ONLINE
+  OFFLINE
+  DEGRADED
+}
+
+enum DeviceType {
+    ROUTER
+    SWITCH
+    ACCESS_POINT
+    SERVER
+    CAMERA
+    NVR
+    UPS
+    REPEATER
+    ANTENNA
+    SENSOR
+    CONTROLLER
+    OTHER
+}
+
+model Device {
+  id String @id @default(uuid())
+  name String
+  ip_address String
+  mac_address String
+  manufacturer String
+  status DeviceStatus @default(OFFLINE)
+  type DeviceType @default(OTHER)
+  locationId String
+  model String
+  serialNumber String
+  description String
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+  location Location @relation (fields: [locationId], references: [id])
+  maintenanceLogs MaintenanceLog[]
+  photos DevicePhoto[]
+}
+
+enum MaintenanceType {
+  INSTALLATION
+  COMMISSIONING
+  INSPECTION
+  PREVENTIVE
+  REPAIR
+  REPLACEMENT
+  UPGRADE
+  CONFIGURATION
+  RELOCATION
+  DECOMMISSION
+  EMERGENCY
+}
+
+enum MaintenanceResult {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  FAILED
+  DELAYED
+}
+
+model MaintenanceLog {
+  id String @id @default(uuid())
+  userId String
+  deviceId String
+  workType MaintenanceType @default(INSPECTION)
+  workResult MaintenanceResult @default(COMPLETED)
+  description String
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+  plannedAt DateTime?
+  user User @relation(fields: [userId], references: [id])
+  device Device @relation(fields: [deviceId], references: [id])
+}
+
+model PhotoSite {
+  id String @id @default(uuid())
+  locationId String
+  path String
+  location Location @relation(fields: [locationId], references: [id])
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}
+
+model DevicePhoto {
+  id String @id @default(uuid())
+  deviceId String
+  path String
+  device Device @relation(fields: [deviceId], references: [id])
+  createdAt DateTime @default(now()) 
+  updatedAt DateTime @updatedAt
+}

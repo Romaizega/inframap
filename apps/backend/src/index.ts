@@ -1,7 +1,12 @@
 import Fastify from "fastify";
+import prisma from "./lib/prisma"
 
 const app = Fastify({
     logger: true
+})
+
+app.addHook('onClose', async () => {
+    await prisma.$disconnect()
 })
 
 app.get('/health', async () => {

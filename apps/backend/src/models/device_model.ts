@@ -18,7 +18,6 @@ export interface Device {
     name: string
     ip_address: string
     mac_address: string
-    organizationId: string
     manufacturer: string
     status: DeviceStatus
     type: DeviceType
@@ -55,12 +54,16 @@ export interface PhotoSite {
     id: string
     locationId: string
     path: string
+    createdAt: Date
+    updatedAt: Date
 }
 
 export interface DevicePhoto {
     id: string
     deviceId: string
     path: string
+    createdAt: Date
+    updatedAt: Date
 }
 
 export interface DeviceWithDetails extends Device {
