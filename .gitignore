@@ -142,3 +142,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+apps/backend/.agents/
+apps/backend/.windsurf/
+apps/backend/.claude/
+apps/backend/skills-lock.json

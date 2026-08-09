@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: inframap
       POSTGRES_PASSWORD: inframap
       POSTGRES_DB: inframap
+    ports:
+      - "5433:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
