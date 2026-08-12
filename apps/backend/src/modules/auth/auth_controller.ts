@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { RegisterDTO } from "./auth_schema";
-import { registerService } from "./auth_service";
-import {Prisma} from "@prisma/client"
+import { RegisterDTO, LoginDTO } from "./auth_schema";
+import { registerService, loginService } from "./auth_service";
+import { Prisma } from "@prisma/client"
 
 export const registerController = async (
     request: FastifyRequest<{ Body: RegisterDTO }>,
@@ -17,10 +17,30 @@ export const registerController = async (
             return reply.status(409).send({ message: error.message })
         }
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-            return reply.status(409).send({message: "Username or email already exists"})
+            return reply.status(409).send({ message: "Username or email already exists" })
         }
         request.log.error(error)
         return reply.status(500).send({ message: "Server error" })
     }
-
 }
+
+export const loginController = async (
+    request: FastifyRequest<{ Body: LoginDTO }>,
+    reply: FastifyReply) => {
+    try {
+        const log = request.body
+        const login = await loginService(log)
+        return reply.status(200).send(login)
+    } catch (error: unknown) {
+        if (error instanceof Error && error.message === "Invalid credentials") {
+            return reply.status(401).send({ message: error.message })
+        }
+        if (error instanceof Error && error.message === "Email not found") {
+            return reply.status(404).send({ message: error.message })
+        }
+        request.log.error(error)
+        return reply.status(500).send({ message: "Server error" })
+    }
+}
+
+

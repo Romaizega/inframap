@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { registerController } from "./auth_controller";
-import { registerZodSchema } from "./auth_schema";
+import { registerController, loginController } from "./auth_controller";
+import { registerZodSchema, loginZodSchema } from "./auth_schema";
 
 export const authRoutes = async (fastify: FastifyInstance) => {
     fastify.post('/register', {
@@ -16,4 +16,17 @@ export const authRoutes = async (fastify: FastifyInstance) => {
         }
 
     }, registerController)
+
+    fastify.post('/login', {
+        preHandler: async (request, reply) => {
+            const result = loginZodSchema.body.safeParse(request.body)
+            if (!result.success) {
+                return reply.status(400).send({
+                    message: "Login error",
+                    errors: result.error.issues
+                })
+            }
+            request.body = result.data
+        }
+    }, loginController)
 }
