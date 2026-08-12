@@ -29,8 +29,16 @@ export const loginController = async (
     reply: FastifyReply) => {
     try {
         const log = request.body
-        const login = await loginService(log)
-        return reply.status(200).send(login)
+        const loginUser = await loginService(log)
+        const token = reply.server.jwt.sign(
+            {
+                id: loginUser.id,
+                email: loginUser.email,
+                role: loginUser.role
+            },
+            {expiresIn: '7d'}
+        )
+        return reply.status(200).send({token, user: loginUser})
     } catch (error: unknown) {
         if (error instanceof Error && error.message === "Invalid credentials") {
             return reply.status(401).send({ message: error.message })

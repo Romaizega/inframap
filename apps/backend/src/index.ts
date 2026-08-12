@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import prisma from "./lib/prisma"
 import { authRoutes } from "./modules/auth/auth_routes";
+import jwt from '@fastify/jwt'
 
 const app = Fastify({
     logger: true
@@ -14,6 +15,9 @@ app.get('/health', async () => {
     return { status: 'ok', service: 'inframap-backend' }
 })
 
+app.register(jwt, {
+    secret:process.env.JWT_SECRET ?? 'fallback-secret'
+})
 app.register(authRoutes, {prefix:'/auth'})
 
 const start = async () => {
