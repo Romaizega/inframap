@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { registerController, loginController } from "./auth_controller";
+import { registerController, loginController, getMeController } from "./auth_controller";
 import { registerZodSchema, loginZodSchema } from "./auth_schema";
+import { authenticate } from "./auth_guard";
 
 export const authRoutes = async (fastify: FastifyInstance) => {
     fastify.post('/register', {
@@ -29,4 +30,5 @@ export const authRoutes = async (fastify: FastifyInstance) => {
             request.body = result.data
         }
     }, loginController)
+    fastify.get('/me', { preHandler: [authenticate] }, getMeController)
 }

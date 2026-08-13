@@ -51,4 +51,12 @@ export const loginController = async (
     }
 }
 
+export const getMeController  = async (
+    request: FastifyRequest,
+    reply: FastifyReply
+) => {
+    const {id, email, role} = request.user
+    return reply.status(200).send({user: {id, email, role}})
+}
+
 
