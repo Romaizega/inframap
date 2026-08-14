@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Device" ALTER COLUMN "ip_address" DROP NOT NULL,
+ALTER COLUMN "mac_address" DROP NOT NULL,
+ALTER COLUMN "manufacturer" DROP NOT NULL,
+ALTER COLUMN "model" DROP NOT NULL,
+ALTER COLUMN "serialNumber" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL;

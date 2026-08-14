@@ -34,7 +34,8 @@ export const loginController = async (
             {
                 id: loginUser.id,
                 email: loginUser.email,
-                role: loginUser.role
+                role: loginUser.role,
+                organizationId: loginUser.organizationId
             },
             {expiresIn: '7d'}
         )

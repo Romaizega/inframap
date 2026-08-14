@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import prisma from "./lib/prisma"
 import { authRoutes } from "./modules/auth/auth_routes";
+import { deviceRoutes } from "./modules/devices/device_routes";
 import jwt from '@fastify/jwt'
 
 const app = Fastify({
@@ -19,6 +20,7 @@ app.register(jwt, {
     secret:process.env.JWT_SECRET ?? 'fallback-secret'
 })
 app.register(authRoutes, {prefix:'/auth'})
+app.register(deviceRoutes, {prefix: '/devices'})
 
 const start = async () => {
     try {
