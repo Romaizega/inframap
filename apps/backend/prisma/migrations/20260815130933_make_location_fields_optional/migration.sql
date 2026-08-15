@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Location" ALTER COLUMN "building" DROP NOT NULL,
+ALTER COLUMN "floor" DROP NOT NULL,
+ALTER COLUMN "latitude" DROP NOT NULL,
+ALTER COLUMN "longitude" DROP NOT NULL,
+ALTER COLUMN "accessinstruction" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL;
