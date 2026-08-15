@@ -37,12 +37,12 @@ model User {
 model Location {
   id String @id @default(uuid())
   site String
-  building String
-  floor String
-  latitude Float
-  longitude Float
-  accessinstruction String
-  description String
+  building String?
+  floor String?
+  latitude Float?
+  longitude Float?
+  accessinstruction String?
+  description String?
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt
   organizationId String
