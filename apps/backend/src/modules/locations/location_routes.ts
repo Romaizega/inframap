@@ -1,4 +1,4 @@
-import fastify, { FastifyInstance, FastifyRequest } from "fastify";
+import  { FastifyInstance, FastifyRequest } from "fastify";
 import { createLocationController, updateLocationController, deleteLocationController, getLocationByIdController, getLocationsController } from "./location_controller";
 import { createLocationSchema, updateLocationSchema } from "./location_schema";
 import { CreateLocationDTO, UpdateLocationDTO } from "./location_schema";
@@ -33,7 +33,7 @@ export const locationRoutes = async (fastify: FastifyInstance) => {
                         errors: result.error.issues
                     })
                 }
-                request.body = result.data  // ← добавил
+                request.body = result.data
             }
         ]
     }, updateLocationController as any)
