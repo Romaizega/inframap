@@ -3,6 +3,7 @@ import prisma from "./lib/prisma"
 import { authRoutes } from "./modules/auth/auth_routes";
 import { deviceRoutes } from "./modules/devices/device_routes";
 import { locationRoutes } from "./modules/locations/location_routes";
+import {logRoutes} from "./modules/maintenance/maintenance_routes"
 import jwt from '@fastify/jwt'
 
 const app = Fastify({
@@ -23,6 +24,7 @@ app.register(jwt, {
 app.register(authRoutes, {prefix:'/auth'})
 app.register(deviceRoutes, {prefix: '/devices'})
 app.register(locationRoutes, {prefix: '/locations'})
+app.register(logRoutes)
 
 const start = async () => {
     try {
