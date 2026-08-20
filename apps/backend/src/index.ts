@@ -5,6 +5,8 @@ import { deviceRoutes } from "./modules/devices/device_routes";
 import { locationRoutes } from "./modules/locations/location_routes";
 import {logRoutes} from "./modules/maintenance/maintenance_routes"
 import jwt from '@fastify/jwt'
+import './queue/worker'
+import { startScheduler } from './queue/scheduler'
 
 const app = Fastify({
     logger: true
@@ -13,6 +15,8 @@ const app = Fastify({
 app.addHook('onClose', async () => {
     await prisma.$disconnect()
 })
+
+
 
 app.get('/health', async () => {
     return { status: 'ok', service: 'inframap-backend' }
@@ -28,6 +32,7 @@ app.register(logRoutes)
 
 const start = async () => {
     try {
+        await startScheduler()
         await app.listen({ port: 3001, host: '0.0.0.0' })
     } catch (error) {
         app.log.error(error)

@@ -23,6 +23,8 @@ services:
     restart: unless-stopped
     volumes:
       - redis_data:/data
+    ports:
+      - "6379:6379"
     expose:
       - "6379"
     healthcheck:
