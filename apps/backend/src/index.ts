@@ -7,6 +7,7 @@ import {logRoutes} from "./modules/maintenance/maintenance_routes"
 import jwt from '@fastify/jwt'
 import './queue/worker'
 import { startScheduler } from './queue/scheduler'
+import { eventRoutes } from "./modules/events/routes";
 
 const app = Fastify({
     logger: true
@@ -29,6 +30,7 @@ app.register(authRoutes, {prefix:'/auth'})
 app.register(deviceRoutes, {prefix: '/devices'})
 app.register(locationRoutes, {prefix: '/locations'})
 app.register(logRoutes)
+app.register(eventRoutes)
 
 const start = async () => {
     try {
