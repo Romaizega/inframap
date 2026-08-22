@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "InfraMap backend API",
   "scripts": {
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/src/index.js"
   },
   "license": "ISC",
   "dependencies": {
     "@fastify/jwt": "^10.2.1",
     "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client-runtime-utils": "*",
     "@prisma/client": "^7.9.1",
     "bcrypt": "^6.0.0",
     "bullmq": "^6.1.2",

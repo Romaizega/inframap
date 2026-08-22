@@ -1,7 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { CreateDeviceDTO, UpdateDeviceDTO } from "./device_schema";
 import { createDevice, updateDevice, getDeviceById, getDevices, deleteDevice } from "./device_service";
-import { Prisma } from "@prisma/client";
 
 export const createDeviceController = async (
     request: FastifyRequest<{ Body: CreateDeviceDTO }>,
