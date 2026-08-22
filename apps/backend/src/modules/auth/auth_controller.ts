@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { RegisterDTO, LoginDTO } from "./auth_schema";
 import { registerService, loginService } from "./auth_service";
-import { Prisma } from "@prisma/client"
+import { Prisma } from "../../generated/prisma";
 
 export const registerController = async (
     request: FastifyRequest<{ Body: RegisterDTO }>,
@@ -16,7 +16,10 @@ export const registerController = async (
         if (error instanceof Error && error.message === "Email already exist") {
             return reply.status(409).send({ message: error.message })
         }
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError &&
+            (error as Prisma.PrismaClientKnownRequestError).code === "P2002"
+        ) {
             return reply.status(409).send({ message: "Username or email already exists" })
         }
         request.log.error(error)
@@ -37,9 +40,9 @@ export const loginController = async (
                 role: loginUser.role,
                 organizationId: loginUser.organizationId
             },
-            {expiresIn: '7d'}
+            { expiresIn: '7d' }
         )
-        return reply.status(200).send({token, user: loginUser})
+        return reply.status(200).send({ token, user: loginUser })
     } catch (error: unknown) {
         if (error instanceof Error && error.message === "Invalid credentials") {
             return reply.status(401).send({ message: error.message })
@@ -52,12 +55,12 @@ export const loginController = async (
     }
 }
 
-export const getMeController  = async (
+export const getMeController = async (
     request: FastifyRequest,
     reply: FastifyReply
 ) => {
-    const {id, email, role} = request.user
-    return reply.status(200).send({user: {id, email, role}})
+    const { id, email, role } = request.user
+    return reply.status(200).send({ user: { id, email, role } })
 }
 
 
