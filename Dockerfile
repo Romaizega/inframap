@@ -10,4 +10,6 @@ RUN cd apps/backend && npx prisma generate --schema=prisma/schema.prisma
 RUN pnpm --filter backend build
 RUN cp -r apps/backend/src/generated apps/backend/dist/src/generated
 EXPOSE 3001
-CMD ["pnpm", "--filter", "backend", "start"]
+COPY apps/backend/entrypoint.sh .
+RUN chmod +x entrypoint.sh
+CMD ["sh", "entrypoint.sh"]
