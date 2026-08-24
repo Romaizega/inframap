@@ -7,8 +7,10 @@ interface AuthState {
         id: string
         email: string
         role: string
+        first_name: string,
+        last_name: string
     } | null
-    setAuth: (token: string, user: { id: string, email: string, role: string }) => void
+    setAuth: (token: string, user: { id: string, email: string, role: string, first_name: string, last_name: string }) => void
     logout: () => void
 }
 

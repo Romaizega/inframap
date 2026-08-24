@@ -38,6 +38,8 @@ export const loginController = async (
                 id: loginUser.id,
                 email: loginUser.email,
                 role: loginUser.role,
+                first_name: loginUser.first_name,
+                last_name:loginUser.last_name,
                 organizationId: loginUser.organizationId
             },
             { expiresIn: '7d' }
@@ -59,8 +61,8 @@ export const getMeController = async (
     request: FastifyRequest,
     reply: FastifyReply
 ) => {
-    const { id, email, role } = request.user
-    return reply.status(200).send({ user: { id, email, role } })
+    const { id, email, role , first_name, last_name} = request.user
+    return reply.status(200).send({ user: { id, email, role, first_name, last_name } })
 }
 
 
