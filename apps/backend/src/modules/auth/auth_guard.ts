@@ -2,8 +2,8 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 declare module '@fastify/jwt' {
     interface FastifyJWT {
-        payload: {id:string; email: string; role: string, organizationId:string}
-        user: {id:string; email: string; role: string, organizationId: string}
+        payload: {id:string; email: string; first_name:string; last_name: string; role: string, organizationId:string}
+        user: {id:string; email: string;  first_name:string; last_name: string; role: string, organizationId: string}
     }
 }
 
