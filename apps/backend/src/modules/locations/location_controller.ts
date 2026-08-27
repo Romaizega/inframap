@@ -23,6 +23,7 @@ export const getLocationsController = async (
     reply: FastifyReply
 ) => {
     try {
+        console.log('getLocationController called')
         const orgId = request.user.organizationId
         const locations = await getLocations(orgId)
         return reply.status(200).send(locations)

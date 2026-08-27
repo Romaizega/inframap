@@ -25,6 +25,7 @@ export const getDevicesController = async (
     reply: FastifyReply
 ) => {
     try {
+        console.log('gevicedcontroller called')
         const orgId = request.user.organizationId
         const devices = await getDevices(orgId)
         return reply.status(200).send(devices)
