@@ -13,11 +13,20 @@ export const createLocation = async(data: CreateLocationDTO, organizationId: str
 }
 
 export const getLocations = async (organizationId: string) => {
-    return prisma.location.findMany({
+   const result = await prisma.location.findMany({
         where: {
             organizationId
+        },
+        include: {
+            devices:{
+                select: {
+                    status: true
+                }
+            }
         }
     })
+     console.log(JSON.stringify(result[0], null, 2))
+    return result
 }
 
 export const getLocationById = async (id:string, organizationId: string) => {
