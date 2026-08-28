@@ -3,6 +3,7 @@ import Login from './pages/Login'
 import Dashbosrd from './pages/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import AppLayout from './components/AppLayout'
+import Devices from './pages/Devices'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Dashbosrd />} />
+            <Route path="/devices" element={<Devices />} />
           </Route>
           <Route path="*" element={<Navigate to="/login"/>} />
 

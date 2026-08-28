@@ -63,11 +63,11 @@ export default function Dashboard() {
     }
   }, [localError]);
 
-  const getStatusStyle = (status: string) => {
-    if (status === 'ONLINE') return 'bg-green-500'
-    if (status === 'DEGRADED') return 'bg-yellow-500'
-    return 'bg-red-500'
-  }
+  // const getStatusStyle = (status: string) => {
+  //   if (status === 'ONLINE') return 'bg-green-500'
+  //   if (status === 'DEGRADED') return 'bg-yellow-500'
+  //   return 'bg-red-500'
+  // }
 
   const totalDevices = devices.length
   const onlineDevice = devices.filter(dev => dev.status === 'ONLINE').length
@@ -83,7 +83,7 @@ export default function Dashboard() {
     <>
       <div className="min-h-screen bg-slate-950 p-8 text-white">
         <h1 className="mb-6 text-2xl font-semibold">
-          Devices
+          Dashboard
         </h1>
 
         {localError && (
@@ -176,7 +176,7 @@ export default function Dashboard() {
         {/* <SiteMap locations={locations} /> */}
         <SiteMap locations={locationsWithDevices} />
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {devices.map((device) => (
             <div
               key={device.id}
@@ -209,7 +209,7 @@ export default function Dashboard() {
               </p>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </>
   )
