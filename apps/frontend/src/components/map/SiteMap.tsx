@@ -26,7 +26,7 @@ const getMarkerColor = (devices: { status: string }[] | undefined) => {
     return 'green'
 }
   return (
-    <MapContainer center={[32.0, 34.8]} zoom={13} style={{ height: '400px', width: '100%' }}    >
+    <MapContainer center={[32.0, 34.8]} zoom={13} style={{ height: '700px', width: '100%' }}    >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {locations.filter(l => l.latitude && l.longitude && l.devices).map(location => (
