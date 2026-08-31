@@ -312,6 +312,7 @@ export default function DeviceDetail() {
                     hover:border-cyan-500
                     cursor-pointer
                   "
+                  onClick={() => navigate(`/locations/${device.locationId}`)}
                 >
                   Open Location
                 </button>
@@ -337,7 +338,7 @@ export default function DeviceDetail() {
             </div>
 
             <p className="mt-2 font-mono text-xs text-slate-500">
-              {id }
+              {id}
             </p>
 
             <button
