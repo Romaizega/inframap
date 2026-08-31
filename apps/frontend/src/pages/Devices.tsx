@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { getDevices } from "../api/devicies"
+import { useNavigate } from "react-router-dom"
+import AddDevice from "../components/modals/AddDeviceModal"
 import {
   Server,
   Factory,
@@ -26,6 +28,8 @@ export default function Devices() {
   const [localError, setLocalError] = useState("")
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("ALL")
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const navigate = useNavigate()
 
   // Load devices
   useEffect(() => {
@@ -71,11 +75,9 @@ export default function Devices() {
   // Error timer
   useEffect(() => {
     if (!localError) return
-
     const timer = setTimeout(() => {
       setLocalError("")
     }, 10000)
-
     return () => clearTimeout(timer)
   }, [localError])
 
@@ -141,7 +143,9 @@ export default function Devices() {
             text-sm font-medium
             transition
             hover:bg-cyan-500
+            cursor-pointerдё
           "
+          onClick={() => setIsModalOpen(true)}
         >
           <Plus size={17} />
 
@@ -333,58 +337,45 @@ export default function Devices() {
           <option value="ALL">
             All statuses
           </option>
-
           <option value="ONLINE">
             Online
           </option>
-
           <option value="DEGRADED">
             Degraded
           </option>
-
           <option value="OFFLINE">
             Offline
           </option>
         </select>
-
-
         <span className="ml-auto text-xs text-slate-500">
           {filtered.length} devices
         </span>
-
       </div>
 
 
       {/* TABLE */}
       <div className="overflow-hidden rounded-lg border border-slate-800">
-
         <table className="w-full text-sm">
-
           <thead className="bg-slate-900/70">
-
-            <tr className="text-left text-xs uppercase tracking-wide text-slate-500">
-
+            <tr className="text-left text-xs uppercase tracking-wide text-slate-500"
+            >
               <th className="px-4 py-3 font-medium">
                 Name
               </th>
-
               <th className="px-4 py-3 font-medium">
                 Type
               </th>
-
               <th className="px-4 py-3 font-medium">
                 IP Address
               </th>
-
               <th className="px-4 py-3 font-medium">
                 Status
               </th>
-
+              <th className="px-4 py-3 font-medium">
+                Details
+              </th>
             </tr>
-
           </thead>
-
-
           <tbody>
 
             {filtered.map((device) => (
@@ -392,29 +383,21 @@ export default function Devices() {
               <tr
                 key={device.id}
                 className="
-                  cursor-pointer
                   border-t border-slate-800
                   transition
                   hover:bg-slate-900/70
-                "
-              >
-
+                ">
                 <td className="px-4 py-4 font-medium">
                   {device.name}
                 </td>
-
                 <td className="px-4 py-4 text-slate-400">
                   {device.type}
                 </td>
-
                 <td className="px-4 py-4 font-mono text-xs text-slate-400">
                   {device.ip_address ?? "—"}
                 </td>
-
                 <td className="px-4 py-4">
-
                   <div className="flex items-center gap-2">
-
                     <span
                       className={`
                         h-2
@@ -435,9 +418,13 @@ export default function Devices() {
                     >
                       {device.status}
                     </span>
-
                   </div>
 
+                </td>
+                <td className="cursor-pointer"
+                  onClick={() => navigate(`/devices/${device.id}`)}
+                >
+                  View details
                 </td>
 
               </tr>
@@ -465,6 +452,11 @@ export default function Devices() {
         </table>
 
       </div>
+      <AddDevice
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => getDevices().then(data => setDevices(data))}
+      />
 
     </div>
   )
