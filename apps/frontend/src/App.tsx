@@ -6,6 +6,7 @@ import AppLayout from './components/AppLayout'
 import Devices from './pages/Devices'
 import DeviceDetail from './pages/DeviceDetail'
 import MaintenanceLog from './pages/MaintenanceLogs'
+import LocationDetails from './pages/LocationDetails'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/devices" element={<Devices />} />
             <Route path="/devices/:id" element={<DeviceDetail />} />
             <Route path="/devices/:id/maintenance-logs" element={<MaintenanceLog />} />
+            <Route path="/locations/:id" element={<LocationDetails />} />
           </Route>
           <Route path="*" element={<Navigate to="/login"/>} />
 
