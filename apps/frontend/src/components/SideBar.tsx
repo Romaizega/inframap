@@ -1,12 +1,6 @@
 import { useAuthStore } from "../store/authStore";
 import { NavLink, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Server,
-  MapPin,
-  Wrench,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, Server, MapPin, Wrench, LogOut } from "lucide-react";
 
 export default function SideBar() {
   const { user, logout } = useAuthStore();
@@ -26,18 +20,12 @@ export default function SideBar() {
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-slate-800 bg-slate-900 p-4 text-white">
-
       <div className="mb-8">
-        <h1 className="text-xl font-semibold">
-          InfraMap
-        </h1>
-        <p className="text-xs text-slate-500">
-          Infrastructure Management
-        </p>
+        <h1 className="text-xl font-semibold">InfraMap</h1>
+        <p className="text-xs text-slate-500">Infrastructure Management</p>
       </div>
 
       <nav className="flex flex-col gap-2">
-
         <NavLink to="/dashboard" className={linkStyle}>
           <LayoutDashboard size={18} />
           Dashboard
@@ -57,19 +45,15 @@ export default function SideBar() {
           <Wrench size={18} />
           Maintenance
         </NavLink>
-
       </nav>
 
       <div className="mt-auto border-t border-slate-800 pt-4">
-
         <div className="mb-3">
           <p className="text-sm text-white">
             {user?.first_name} {user?.last_name}
           </p>
 
-          <p className="text-xs text-slate-500">
-            {user?.role}
-          </p>
+          <p className="text-xs text-slate-500">{user?.role}</p>
         </div>
 
         <button
@@ -79,9 +63,7 @@ export default function SideBar() {
           <LogOut size={18} />
           Logout
         </button>
-
       </div>
-
     </aside>
   );
 }
