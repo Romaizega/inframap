@@ -45,7 +45,7 @@ export default function LocationDetails() {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   const loadLocation = async () => {
-    if(!id) return
+    if (!id) return;
     try {
       const data = await getLocationById(id);
       console.log("LOCATION DATA:", data);
@@ -58,7 +58,6 @@ export default function LocationDetails() {
 
   useEffect(() => {
     if (!id) return;
-
     loadLocation();
   }, [id]);
 
