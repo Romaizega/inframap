@@ -5,7 +5,7 @@ import { CreateLocationDTO, UpdateLocationDTO } from "./location_schema";
 import { authenticate } from "../auth/auth_guard";
 
 export const locationRoutes = async (fastify: FastifyInstance) => {
-    fastify.post('/create-location', {
+    fastify.post('/', {
         preHandler: [
             authenticate as any,
             async (request: FastifyRequest<{ Body: CreateLocationDTO }>, reply) => {
