@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getDeviceById } from "../api/devicies";
+import EditDevice from "../components/modals/EditDeviceModal";
 import {
   Server,
   Network,
@@ -35,21 +36,23 @@ export default function DeviceDetail() {
   const [localError, setLocalError] = useState("");
   const [device, setDevice] = useState<Device | null>(null);
   const navigate = useNavigate();
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { id } = useParams();
 
+  const loadDeviceId = async () => {
+    if (!id) return;
+    try {
+      const data = await getDeviceById(id);
+      setDevice(data);
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to load the device");
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
-
-    const loadDeviceId = async () => {
-      try {
-        const data = await getDeviceById(id);
-        setDevice(data);
-      } catch {
-        setLocalError("Failed to load the device");
-      }
-    };
-
     loadDeviceId();
   }, [id]);
 
@@ -138,7 +141,9 @@ export default function DeviceDetail() {
             text-sm font-medium
             transition
             hover:bg-cyan-500
+            cursor-pointer
           "
+          onClick={() => setIsEditOpen(true)}
         >
           <Pencil size={16} />
           Edit Device
@@ -335,6 +340,12 @@ export default function DeviceDetail() {
           </section>
         </div>
       </div>
+      <EditDevice
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSuccess={loadDeviceId}
+        device={device}
+      />
     </div>
   );
 }
