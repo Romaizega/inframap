@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getMaintenanceByDevice } from "../api/maintenance";
+import AddMaintenance from "../components/modals/AddMaintenanceLogModal";
 import {
   Wrench,
   Calendar,
@@ -44,22 +45,23 @@ interface MaintenanceLog {
 export default function MaintenanceLog() {
   const [localError, setLocalError] = useState("");
   const [logs, setLogs] = useState<MaintenanceLog[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const loadMaintenance = async () => {
+    if (!id) return;
+    try {
+      const data = await getMaintenanceByDevice(id);
+      setLogs(data);
+    } catch {
+      setLocalError("Failed to load maintenance history");
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
-
-    const loadMaintenance = async () => {
-      try {
-        const data = await getMaintenanceByDevice(id);
-        setLogs(data);
-      } catch {
-        setLocalError("Failed to load maintenance history");
-      }
-    };
-
     loadMaintenance();
   }, [id]);
 
@@ -130,7 +132,9 @@ export default function MaintenanceLog() {
             text-sm font-medium
             transition
             hover:bg-cyan-500
+            cursor-pointer
           "
+          onClick={() => setIsModalOpen(true)}
         >
           + Add Maintenance
         </button>
@@ -299,6 +303,12 @@ export default function MaintenanceLog() {
           </div>
         ))}
       </div>
+      <AddMaintenance
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={loadMaintenance}
+        deviceId={id!}
+      />
     </div>
   );
 }

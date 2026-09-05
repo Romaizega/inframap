@@ -18,10 +18,8 @@ export default function AddLocation({ isOpen, onClose, onSuccess }: Props) {
   const [description, setDescription] = useState("");
   const [localError, setLocalError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   
-
-  if (!isOpen) return null;
-
   const resetForm = () => {
     setSite("");
     setBuilding("");
@@ -32,25 +30,25 @@ export default function AddLocation({ isOpen, onClose, onSuccess }: Props) {
     setDescription("");
     setLocalError("");
   };
-
+  
   const handleClose = () => {
     resetForm();
     onClose();
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     setLocalError("");
-
+    
     if (!site.trim()) {
       setLocalError("Site is required");
       return;
     }
-
+    
     try {
       setIsLoading(true);
-
+      
       await createLocation({
         site: site.trim(),
         building: building.trim() || null,
@@ -65,22 +63,24 @@ export default function AddLocation({ isOpen, onClose, onSuccess }: Props) {
       onSuccess();
     } catch (error) {
       console.error(error);
-
+      
       setLocalError("Failed to create location");
     } finally {
       setIsLoading(false);
     }
   };
-
+  
+  if (!isOpen) return null;
+  
   return (
     <div
-      className="
-        fixed inset-0 z-50
-        flex items-center justify-center
+    className="
+    fixed inset-0 z-50
+    flex items-center justify-center
         bg-black/60
         px-4
       "
-    >
+      >
       <div
         className="
           w-full max-w-xl
