@@ -22,7 +22,7 @@ interface LocationData {
   organizationId: string;
 }
 
-export default function EditLocation({isOpen, onClose, onSuccess, location,}: Props) {
+export default function EditLocation({isOpen, onClose, onSuccess, location}: Props) {
   const [site, setSite] = useState("");
   const [building, setBuilding] = useState("");
   const [floor, setFloor] = useState("");

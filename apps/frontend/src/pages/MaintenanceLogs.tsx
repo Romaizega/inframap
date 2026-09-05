@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getMaintenanceByDevice } from "../api/maintenance";
 import AddMaintenance from "../components/modals/AddMaintenanceLogModal";
+import EditLog from "../components/modals/EditMaintenaceLodModal";
 import {
   Wrench,
   Calendar,
@@ -10,6 +11,7 @@ import {
   XCircle,
   AlertTriangle,
   ArrowLeft,
+  Pencil,
 } from "lucide-react";
 
 type MaintenanceType =
@@ -46,6 +48,8 @@ export default function MaintenanceLog() {
   const [localError, setLocalError] = useState("");
   const [logs, setLogs] = useState<MaintenanceLog[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [selectedLog, setSelectedLog] = useState<MaintenanceLog | null>(null);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -246,8 +250,11 @@ export default function MaintenanceLog() {
 
               {/* RESULT */}
 
-              <div
-                className={`
+              <div className="flex items-center gap-2">
+                {/* STATUS */}
+
+                <div
+                  className={`
                   flex
                   items-center
                   gap-1.5
@@ -256,11 +263,39 @@ export default function MaintenanceLog() {
                   px-3 py-1
                   text-xs
                   ${getResultStyle(log.workResult)}
-                `}
-              >
-                {getResultIcon(log.workResult)}
+                `}>
+                  {getResultIcon(log.workResult)}
 
-                {log.workResult.replaceAll("_", " ")}
+                  {log.workResult.replaceAll("_", " ")}
+                </div>
+
+                {/* EDIT */}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedLog(log);
+                    setIsEditOpen(true);
+                  }}
+                            className="
+                flex
+                items-center
+                gap-1.5
+                rounded-md
+                border border-slate-700
+                bg-slate-800
+                px-3 py-1
+                text-xs
+                text-slate-300
+                transition
+                hover:border-cyan-600
+                hover:text-cyan-400
+                cursor-pointer
+                  "
+                >
+                  <Pencil size={13} />
+                  Edit
+                </button>
               </div>
             </div>
 
@@ -272,7 +307,7 @@ export default function MaintenanceLog() {
               text-sm
               leading-6
               text-slate-300
-            "
+              "
             >
               {log.description}
             </p>
@@ -308,6 +343,13 @@ export default function MaintenanceLog() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={loadMaintenance}
         deviceId={id!}
+      />
+      <EditLog
+      isOpen={isEditOpen}
+      onClose={() => setIsEditOpen(false)}
+      onSuccess={loadMaintenance}
+      maintenanceLog={selectedLog}
+
       />
     </div>
   );

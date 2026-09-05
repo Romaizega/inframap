@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getLocationById } from "../api/locations";
 import EditLocation from "../components/modals/EditLocationModal";
 import {
@@ -10,6 +10,7 @@ import {
   Info,
   Image as ImageIcon,
   Pencil,
+  ArrowLeft,
 } from "lucide-react";
 
 interface PhotoSite {
@@ -39,6 +40,8 @@ export default function LocationDetails() {
   const [localError, setLocalError] = useState("");
   const [location, setLocation] = useState<Location | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const navigate = useNavigate();
+  const { state } = useLocation();
 
   const { id } = useParams();
 
@@ -137,6 +140,19 @@ export default function LocationDetails() {
           {localError}
         </div>
       )}
+      <div className="">
+        <button
+          className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition mb-6 cursor-pointer"
+          onClick={() =>
+            state?.fromDeviceId
+              ? navigate(`/devices/${state.fromDeviceId}`)
+              : navigate("/locations")
+          }
+        >
+          <ArrowLeft size={24} />
+          {state?.fromDeviceId ? "Back to device" : "Back to locations"}
+        </button>
+      </div>
 
       {/* MAIN GRID */}
 
