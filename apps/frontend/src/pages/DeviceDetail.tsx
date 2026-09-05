@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getDeviceById } from "../api/devicies";
+import { getDeviceById, deleteDevice } from "../api/devicies";
 import EditDevice from "../components/modals/EditDeviceModal";
 import {
   Server,
@@ -12,6 +12,7 @@ import {
   Pencil,
   ArrowLeft,
   ScrollText,
+  Trash2,
 } from "lucide-react";
 
 type DeviceStatus = "ONLINE" | "OFFLINE" | "DEGRADED";
@@ -48,6 +49,18 @@ export default function DeviceDetail() {
     } catch (error) {
       console.error(error);
       setLocalError("Failed to load the device");
+    }
+  };
+
+  const handleDeleteDevice = async () => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to delete this device?")) return;
+    try {
+      await deleteDevice(id);
+      navigate("/devices");
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to delete the device");
     }
   };
 
@@ -132,6 +145,7 @@ export default function DeviceDetail() {
           </p>
         </div>
 
+        <div className="flex flex-col gap-2">
         <button
           className="
             flex items-center gap-2
@@ -148,6 +162,25 @@ export default function DeviceDetail() {
           <Pencil size={16} />
           Edit Device
         </button>
+        <button
+          className="
+            flex items-center gap-2
+            rounded-md
+            bg-red-600
+            hover:bg-red-500
+            px-4 py-2
+            text-sm font-medium
+            transition
+            hover:bg-cyan-500
+            cursor-pointer
+          "
+          onClick={handleDeleteDevice}
+        >
+          <Trash2 size={16} />
+          Delete Device
+        </button>
+        </div>
+
       </div>
 
       {/* ERROR */}
@@ -271,7 +304,11 @@ export default function DeviceDetail() {
                     hover:border-cyan-500
                     cursor-pointer
                   "
-                  onClick={() => navigate(`/locations/${device.locationId}`)}
+                  onClick={() =>
+                    navigate(`/locations/${device.locationId}`, {
+                      state: { fromDeviceId: id },
+                    })
+                  }
                 >
                   Open Location
                 </button>

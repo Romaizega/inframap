@@ -39,3 +39,8 @@ export const updateDevice = async (id: string, data: UpdateDeviceDTO) => {
     const result = await api.patch(`/devices/${id}`, data)
     return result.data
 }
+
+export const deleteDevice = async (id: string) => {
+    const result = await api.delete(`/devices/${id}`)
+    return result.data
+}
