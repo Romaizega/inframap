@@ -32,3 +32,13 @@ export const updateMaintenceLog = async (
   const result = await api.patch(`/maintenance-logs/${id}`, data);
   return result.data;
 };
+
+export const getAllLogs = async () => {
+  const result = await api.get('/maintenance-logs')
+  return result.data
+}
+
+export const deleteLog = async (id:string) => {
+  const result = await api.delete(`/maintenance-logs/${id}`)
+  return result.data
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { getLocationById } from "../api/locations";
+import { getLocationById, deleteLocation } from "../api/locations";
 import EditLocation from "../components/modals/EditLocationModal";
 import {
   MapPin,
@@ -11,6 +11,7 @@ import {
   Image as ImageIcon,
   Pencil,
   ArrowLeft,
+  Trash2,
 } from "lucide-react";
 
 interface PhotoSite {
@@ -56,6 +57,19 @@ export default function LocationDetails() {
     } catch (error) {
       console.error(error);
       setLocalError("Failed to load location");
+    }
+  };
+
+  const handleDeleteLocation = async () => {
+    if (!id) return;
+    if (!window.confirm("Are you sure you want to delete this location?"))
+      return;
+    try {
+      await deleteLocation(id);
+      navigate("/locations");
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to delete the location");
     }
   };
 
@@ -105,8 +119,9 @@ export default function LocationDetails() {
             </p>
           </div>
         </div>
-        <button
-          className="
+        <div className="flex flex-col gap-2">
+          <button
+            className="
             flex items-center gap-3
             rounded-md
             bg-cyan-600
@@ -116,11 +131,28 @@ export default function LocationDetails() {
             hover:bg-cyan-500
             cursor-pointer
           "
-          onClick={() => setIsEditOpen(true)}
-        >
-          <Pencil size={16} />
-          Edit Location
-        </button>
+            onClick={() => setIsEditOpen(true)}
+          >
+            <Pencil size={16} />
+            Edit Location
+          </button>
+          <button
+            className="
+            flex items-center gap-2
+            rounded-md
+            bg-red-600
+            hover:bg-red-500
+            px-4 py-2
+            text-sm font-medium
+            transition
+            cursor-pointer
+          "
+            onClick={handleDeleteLocation}
+          >
+            <Trash2 size={16} />
+            Delete Location
+          </button>
+        </div>
       </div>
 
       {/* ERROR */}

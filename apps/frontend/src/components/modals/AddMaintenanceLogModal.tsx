@@ -36,14 +36,14 @@ export default function AddMaintenance({
   onSuccess,
   deviceId,
 }: Props) {
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  const defaultDate = now.toISOString().slice(0, 16);
+  // const now = new Date();
+  // now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  // const defaultDate = now.toISOString().slice(0, 16);
 
   const [workType, setWorkType] = useState<MaintenanceType>("INSPECTION");
   const [workResult, setWorkResult] = useState<MaintenanceResult>("SCHEDULED");
   const [description, setDescription] = useState("");
-  const [plannedAt, setPlannedAt] = useState(defaultDate);
+  const [plannedAt, setPlannedAt] = useState("");
   const [localError, setLocalError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,6 +66,10 @@ export default function AddMaintenance({
 
     if (!description.trim()) {
       setLocalError("Description is required");
+      return;
+    }
+    if (description.trim().length < 5) {
+      setLocalError("Description must be at least 5 characters");
       return;
     }
 
@@ -252,6 +256,7 @@ export default function AddMaintenance({
                 type="datetime-local"
                 value={plannedAt}
                 onChange={(e) => setPlannedAt(e.target.value)}
+                onClick={(e) => (e.target as HTMLInputElement).showPicker()}
                 className="
                   w-full
                   rounded-md
@@ -269,7 +274,7 @@ export default function AddMaintenance({
 
             <div>
               <label className="mb-2 block text-sm text-slate-400">
-                Description
+                Description*
               </label>
 
               <textarea

@@ -8,6 +8,7 @@ import DeviceDetail from "./pages/DeviceDetail";
 import MaintenanceLog from "./pages/MaintenanceLogs";
 import LocationDetails from "./pages/LocationDetails";
 import Locations from "./pages/Locations";
+import AllLogs from "./pages/MainrenanceLogsAll";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             />
             <Route path="/locations/:id" element={<LocationDetails />} />
             <Route path="/locations/" element={<Locations />} />
+            <Route path="/maintenance/" element={<AllLogs />} />
           </Route>
           <Route path="*" element={<Navigate to="/login" />} />
         </Route>
