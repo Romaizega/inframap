@@ -39,3 +39,8 @@ export const updateLocation = async (id: string, data: UpdateLocationDTO) => {
     const result = await api.patch(`/locations/${id}`, data)
     return result.data
 }
+
+export const deleteLocation = async (id: string) => {
+    const result = await api.delete(`/locations/${id}`)
+    return result.data
+}

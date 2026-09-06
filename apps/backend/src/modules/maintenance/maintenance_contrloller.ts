@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { CreateMaintenceLogDTO, UpdateMaintenceLogDTO } from "./maintenance_schema";
-import { createLog, updateLog, getLogById, getLogsByDevice, deleteLog } from "./maintenance_service";
+import { createLog, updateLog, getLogById, getLogsByDevice, deleteLog, getAllLogs } from "./maintenance_service";
 
 export const createLogController = async (
     request: FastifyRequest<{ Params: { deviceId: string }, Body: CreateMaintenceLogDTO }>,
@@ -93,3 +93,17 @@ export const deleteLogController = async (
         return reply.status(500).send({ message: "Server error" })
     }
 }
+
+export const getAllLogsController = async (
+    request: FastifyRequest,
+    reply: FastifyReply
+) => {
+    try {
+        const { organizationId } = request.user
+        const allLogs = await getAllLogs(organizationId)
+        return reply.status(200).send(allLogs)
+    } catch (error:unknown) {
+            request.log.error(error)
+        return reply.status(500).send({ message: "Server error" })
+    }
+    }

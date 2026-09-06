@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { updateMaintenceLog } from "../../api/maintenance";
+import { X, Trash2 } from "lucide-react";
+import { updateMaintenceLog, deleteLog } from "../../api/maintenance";
 
 interface Props {
   isOpen: boolean;
@@ -44,7 +44,6 @@ export default function EditLog({
   onSuccess,
   maintenanceLog,
 }: Props) {
-
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
   const defaultDate = now.toISOString().slice(0, 16);
@@ -69,10 +68,21 @@ export default function EditLog({
     onClose();
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm("Delete this maintenance record?")) return;
+    try {
+      await deleteLog(maintenanceLog.id);
+      onSuccess();
+      handleClose();
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to delete maintenance record");
+    }
+  };
+
   useEffect(() => {
     if (!maintenanceLog) return;
-    console.log("plannedAt raw:", maintenanceLog.plannedAt)
-
+    console.log("plannedAt raw:", maintenanceLog.plannedAt);
     setWorkType(maintenanceLog.workType);
     setWorkResult(maintenanceLog.workResult);
     setDescription(maintenanceLog.description);
@@ -97,6 +107,10 @@ export default function EditLog({
 
     if (!description.trim()) {
       setLocalError("Description is required");
+      return;
+    }
+    if (description.trim().length < 5) {
+      setLocalError("Description must be at least 5 characters");
       return;
     }
 
@@ -287,6 +301,7 @@ export default function EditLog({
                 type="datetime-local"
                 value={plannedAt}
                 onChange={(e) => setPlannedAt(e.target.value)}
+                onClick={(e) => (e.target as HTMLInputElement).showPicker()}
                 className="
                   w-full
                   rounded-md
@@ -304,7 +319,7 @@ export default function EditLog({
 
             <div>
               <label className="mb-2 block text-sm text-slate-400">
-                Description
+                Description*
               </label>
 
               <textarea
@@ -337,6 +352,23 @@ export default function EditLog({
               px-6 py-4
             "
           >
+            <button
+              type="button"
+              className="
+            flex items-center gap-2
+            rounded-md
+            bg-red-600
+            hover:bg-red-500
+            px-4 py-2
+            text-sm font-medium
+            transition
+            cursor-pointer
+          "
+              onClick={handleDelete}
+            >
+              <Trash2 size={16} />
+              Delete Log
+            </button>
             <button
               type="button"
               onClick={handleClose}
