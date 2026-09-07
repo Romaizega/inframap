@@ -79,6 +79,8 @@ model Device {
   mac_address String?
   manufacturer String?
   status DeviceStatus @default(OFFLINE)
+  rackUnit Int?
+  rackSize Int?
   type DeviceType @default(OTHER)
   locationId String
   model String?

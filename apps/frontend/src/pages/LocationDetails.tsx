@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getLocationById, deleteLocation } from "../api/locations";
 import EditLocation from "../components/modals/EditLocationModal";
+import type { Device } from "../types/device";
+import RackView from "../components/RackView";
 import {
   MapPin,
   Building2,
@@ -33,6 +35,7 @@ interface Location {
   createdAt: string;
   updatedAt: string;
   organizationId: string;
+  devices?: Device[];
 
   photos?: PhotoSite[];
 }
@@ -414,7 +417,9 @@ export default function LocationDetails() {
               </div>
             )}
           </section>
+        
         </div>
+
 
         {/* RIGHT SIDE */}
 
@@ -529,6 +534,7 @@ export default function LocationDetails() {
               </div>
             </div>
           </section>
+        <RackView devices={location.devices ?? []} />
         </div>
       </div>
       <EditLocation
