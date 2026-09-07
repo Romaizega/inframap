@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getDeviceById, deleteDevice } from "../api/devicies";
 import EditDevice from "../components/modals/EditDeviceModal";
+import RackPosition from "../components/modals/RackPositionModal";
 import {
   Server,
   Network,
@@ -29,6 +30,8 @@ interface Device {
   description: string | null;
   status: DeviceStatus;
   locationId: string | null;
+  rackUnit: number | null;
+  rackSize: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,6 +41,7 @@ export default function DeviceDetail() {
   const [device, setDevice] = useState<Device | null>(null);
   const navigate = useNavigate();
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isRackModalOpen, setIsRackModalOpen] = useState(false);
 
   const { id } = useParams();
 
@@ -146,8 +150,8 @@ export default function DeviceDetail() {
         </div>
 
         <div className="flex flex-col gap-2">
-        <button
-          className="
+          <button
+            className="
             flex items-center gap-2
             rounded-md
             bg-cyan-600
@@ -157,13 +161,13 @@ export default function DeviceDetail() {
             hover:bg-cyan-500
             cursor-pointer
           "
-          onClick={() => setIsEditOpen(true)}
-        >
-          <Pencil size={16} />
-          Edit Device
-        </button>
-        <button
-          className="
+            onClick={() => setIsEditOpen(true)}
+          >
+            <Pencil size={16} />
+            Edit Device
+          </button>
+          <button
+            className="
             flex items-center gap-2
             rounded-md
             bg-red-600
@@ -174,13 +178,12 @@ export default function DeviceDetail() {
             hover:bg-cyan-500
             cursor-pointer
           "
-          onClick={handleDeleteDevice}
-        >
-          <Trash2 size={16} />
-          Delete Device
-        </button>
+            onClick={handleDeleteDevice}
+          >
+            <Trash2 size={16} />
+            Delete Device
+          </button>
         </div>
-
       </div>
 
       {/* ERROR */}
@@ -317,6 +320,38 @@ export default function DeviceDetail() {
               <p className="text-sm text-slate-500">No location assigned</p>
             )}
           </section>
+          {/* RACK POSITION */}
+          <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+            <div className="mb-5 flex items-center gap-2">
+              <Server size={18} className="text-cyan-400" />
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
+                Rack Position
+              </h2>
+            </div>
+
+            {device.rackUnit ? (
+              <>
+                <p className="text-sm text-slate-300">
+                  Unit: U{device.rackUnit} — U
+                  {device.rackUnit + (device.rackSize ?? 1) - 1}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  Size: {device.rackSize}U
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-slate-500">Not assigned to a rack</p>
+            )}
+
+            <button
+              className="mt-5 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm transition hover:border-cyan-500 cursor-pointer"
+              onClick={() => {
+                setIsRackModalOpen(true);
+              }}
+            >
+              {device.rackUnit ? "Edit Rack Position" : "Add to Rack"}
+            </button>
+          </section>
           <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
             <div className="mb-5 flex items-center gap-2">
               <ScrollText size={18} className="text-cyan-400" />
@@ -380,6 +415,12 @@ export default function DeviceDetail() {
       <EditDevice
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
+        onSuccess={loadDeviceId}
+        device={device}
+      />
+      <RackPosition
+        isOpen={isRackModalOpen}
+        onClose={() => setIsRackModalOpen(false)}
         onSuccess={loadDeviceId}
         device={device}
       />

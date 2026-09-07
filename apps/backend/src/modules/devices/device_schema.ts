@@ -13,6 +13,8 @@ export const createDeviceSchema = {
     serialNumber: z.string().nullable().optional(),
     description: z.string().nullable().optional(),
     locationId: z.string().uuid(),
+    rackUnit: z.number().int().min(1).max(42).nullable().optional(),
+    rackSize: z.number().int().min(1).max(42).nullable().optional(),
   }),
 };
 
