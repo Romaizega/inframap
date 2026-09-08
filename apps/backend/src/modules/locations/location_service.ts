@@ -61,6 +61,14 @@ export const getLocationById = async (id: string, organizationId: string) => {
           model: true,
         },
       },
+      photos: {
+        select: {
+          id: true,
+          path: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     },
   });
 

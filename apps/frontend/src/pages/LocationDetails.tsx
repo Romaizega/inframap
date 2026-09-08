@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { getLocationById, deleteLocation } from "../api/locations";
+import {
+  getLocationById,
+  deleteLocation,
+  uploadLocationPhoto,
+  deletePhotoAPI,
+} from "../api/locations";
 import EditLocation from "../components/modals/EditLocationModal";
 import type { Device } from "../types/device";
 import RackView from "../components/RackView";
+
 import {
   MapPin,
   Building2,
@@ -46,6 +52,8 @@ export default function LocationDetails() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const navigate = useNavigate();
   const { state } = useLocation();
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   const { id } = useParams();
 
@@ -73,6 +81,29 @@ export default function LocationDetails() {
     } catch (error) {
       console.error(error);
       setLocalError("Failed to delete the location");
+    }
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+    try {
+      await uploadLocationPhoto(id, file);
+      await loadLocation();
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to upload photo");
+    }
+  };
+
+  const handleDeletePhoto = async (photoId: string) => {
+    if (!window.confirm("Are you sure you want to delete this photo?")) return;
+    try {
+      await deletePhotoAPI(id!, photoId);
+      await loadLocation();
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to upload photo");
     }
   };
 
@@ -350,10 +381,19 @@ export default function LocationDetails() {
                   font-medium
                   transition
                   hover:bg-cyan-500
+                  cursor-pointer
                 "
+                onClick={() => photoInputRef.current?.click()}
               >
                 + Add Photo
               </button>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoUpload}
+              />
             </div>
 
             {/* NO PHOTOS */}
@@ -388,24 +428,23 @@ export default function LocationDetails() {
                 {location.photos.map((photo) => (
                   <div
                     key={photo.id}
-                    className="
-                      overflow-hidden
-                      rounded-md
-                      border border-slate-800
-                      bg-slate-950
-                    "
+                    className="relative overflow-hidden rounded-md border border-slate-800 bg-slate-950"
                   >
                     <img
                       src={`${API_URL}${photo.path}`}
                       alt="Location"
-                      className="
-                        h-40
-                        w-full
-                        object-cover
-                        transition
-                        hover:scale-[1.02]
-                      "
+                      className="h-40 w-full object-cover transition hover:scale-[1.02] cursor-pointer"
+                      onClick={() =>
+                        setSelectedPhoto(`${API_URL}${photo.path}`)
+                      }
                     />
+
+                    <button
+                      onClick={() => handleDeletePhoto(photo.id)}
+                      className="absolute top-2 right-2 rounded-md bg-red-600/80 p-1.5 text-white transition hover:bg-red-500 cursor-pointer"
+                    >
+                      <Trash2 size={14} />
+                    </button>
 
                     <div className="px-3 py-2">
                       <p className="text-xs text-slate-500">
@@ -417,9 +456,7 @@ export default function LocationDetails() {
               </div>
             )}
           </section>
-        
         </div>
-
 
         {/* RIGHT SIDE */}
 
@@ -534,7 +571,7 @@ export default function LocationDetails() {
               </div>
             </div>
           </section>
-        <RackView devices={location.devices ?? []} />
+          <RackView devices={location.devices ?? []} />
         </div>
       </div>
       <EditLocation
@@ -543,6 +580,18 @@ export default function LocationDetails() {
         onSuccess={loadLocation}
         location={location}
       />
+      {selectedPhoto && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-pointer"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <img
+            src={selectedPhoto}
+            alt="Full size"
+            className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -44,3 +44,17 @@ export const deleteLocation = async (id: string) => {
     const result = await api.delete(`/locations/${id}`)
     return result.data
 }
+
+export const uploadLocationPhoto = async (id: string, file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const result = await api.post(`/locations/${id}/photos`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return result.data
+}
+
+export const deletePhotoAPI = async (locationId: string, photoId: string) => {
+    const result = await api.delete(`/locations/${locationId}/photos/${photoId}`)
+    return result.data
+}

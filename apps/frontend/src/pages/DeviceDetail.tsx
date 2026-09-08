@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getDeviceById, deleteDevice } from "../api/devicies";
+import {
+  getDeviceById,
+  deleteDevice,
+  uploadDEvicePhoto,
+  deletePhotoDEvice,
+} from "../api/devicies";
 import EditDevice from "../components/modals/EditDeviceModal";
 import RackPosition from "../components/modals/RackPositionModal";
 import {
@@ -14,10 +19,17 @@ import {
   ArrowLeft,
   ScrollText,
   Trash2,
+  ImageIcon,
 } from "lucide-react";
 
 type DeviceStatus = "ONLINE" | "OFFLINE" | "DEGRADED";
 
+interface PhotoDEvice {
+  id: string;
+  path: string;
+  createdAt: string;
+  updatedAt: string;
+}
 interface Device {
   id: string;
   name: string;
@@ -34,6 +46,8 @@ interface Device {
   rackSize: number | null;
   createdAt: Date;
   updatedAt: Date;
+
+  photos?: PhotoDEvice[];
 }
 
 export default function DeviceDetail() {
@@ -42,6 +56,10 @@ export default function DeviceDetail() {
   const navigate = useNavigate();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRackModalOpen, setIsRackModalOpen] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   const { id } = useParams();
 
@@ -65,6 +83,29 @@ export default function DeviceDetail() {
     } catch (error) {
       console.error(error);
       setLocalError("Failed to delete the device");
+    }
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !id) return;
+    try {
+      await uploadDEvicePhoto(id, file);
+      loadDeviceId();
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to upload photo");
+    }
+  };
+
+  const handleDeletePhoto = async (photoId: string) => {
+    if (!window.confirm("Are you sure you want to delete this photo?")) return;
+    try {
+      await deletePhotoDEvice(id!, photoId);
+      loadDeviceId();
+    } catch (error) {
+      console.error(error);
+      setLocalError("Failed to upload photo");
     }
   };
 
@@ -272,6 +313,121 @@ export default function DeviceDetail() {
               {device.description || "No description provided."}
             </p>
           </section>
+          <section
+            className="
+              rounded-lg
+              border border-slate-800
+              bg-slate-900
+              p-6
+            "
+          >
+            <div className="mb-5 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ImageIcon size={18} className="text-slate-500" />
+
+                <div>
+                  <h2
+                    className="
+                      text-sm
+                      font-semibold
+                      uppercase
+                      tracking-wide
+                      text-slate-400
+                    "
+                  >
+                    Photos
+                  </h2>
+
+                  <p className="mt-1 text-xs text-slate-500">
+                    Device photos
+                  </p>
+                </div>
+              </div>
+
+              <button
+                className="
+                  rounded-md
+                  bg-cyan-600
+                  px-3 py-2
+                  text-sm
+                  font-medium
+                  transition
+                  hover:bg-cyan-500
+                  cursor-pointer
+                "
+                onClick={() => photoInputRef.current?.click()}
+              >
+                + Add Photo
+              </button>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handlePhotoUpload}
+              />
+            </div>
+
+            {/* NO PHOTOS */}
+
+            {!device.photos?.length ? (
+              <div
+                className="
+                  flex
+                  h-40
+                  flex-col
+                  items-center
+                  justify-center
+                  rounded-md
+                  border
+                  border-dashed
+                  border-slate-700
+                  bg-slate-950
+                "
+              >
+                <ImageIcon size={28} className="mb-2 text-slate-600" />
+
+                <p className="text-sm text-slate-500">No photos added</p>
+
+                <p className="mt-1 text-xs text-slate-600">
+                  Add photos to help technicians find the location
+                </p>
+              </div>
+            ) : (
+              /* PHOTO GRID */
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+                {device.photos.map((photo) => (
+                  <div
+                    key={photo.id}
+                    className="relative overflow-hidden rounded-md border border-slate-800 bg-slate-950"
+                  >
+                    <img
+                      src={`${API_URL}${photo.path}`}
+                      alt="device"
+                      className="h-40 w-full object-cover transition hover:scale-[1.02] cursor-pointer"
+                      onClick={() =>
+                        setSelectedPhoto(`${API_URL}${photo.path}`)
+                      }
+                    />
+
+                    <button
+                      onClick={() => handleDeletePhoto(photo.id)}
+                      className="absolute top-2 right-2 rounded-md bg-red-600/80 p-1.5 text-white transition hover:bg-red-500 cursor-pointer"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+
+                    <div className="px-3 py-2">
+                      <p className="text-xs text-slate-500">
+                        {new Date(photo.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
 
         {/* RIGHT SIDE */}
@@ -424,6 +580,18 @@ export default function DeviceDetail() {
         onSuccess={loadDeviceId}
         device={device}
       />
+      {selectedPhoto && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 cursor-pointer"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <img
+            src={selectedPhoto}
+            alt="Full size"
+            className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
+          />
+        </div>
+      )}
     </div>
   );
 }
