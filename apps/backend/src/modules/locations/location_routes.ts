@@ -1,41 +1,74 @@
-import  { FastifyInstance, FastifyRequest } from "fastify";
-import { createLocationController, updateLocationController, deleteLocationController, getLocationByIdController, getLocationsController } from "./location_controller";
+import { FastifyInstance, FastifyRequest } from "fastify";
+import {
+  createLocationController,
+  updateLocationController,
+  deleteLocationController,
+  getLocationByIdController,
+  getLocationsController,
+} from "./location_controller";
 import { createLocationSchema, updateLocationSchema } from "./location_schema";
 import { CreateLocationDTO, UpdateLocationDTO } from "./location_schema";
 import { authenticate } from "../auth/auth_guard";
+import { uploadLocationPhotoController,deletePhotoController } from "./photo_controller"
 
 export const locationRoutes = async (fastify: FastifyInstance) => {
-    fastify.post('/', {
-        preHandler: [
-            authenticate as any,
-            async (request: FastifyRequest<{ Body: CreateLocationDTO }>, reply) => {
-                const result = createLocationSchema.body.safeParse(request.body)
-                if (!result.success) {
-                    return reply.status(400).send({
-                        message: "Create location failed",
-                        errors: result.error.issues
-                    })
-                }
-                request.body = result.data
-            }
-        ]
-    }, createLocationController)
-    fastify.get('/', { preHandler: [authenticate] }, getLocationsController)
-    fastify.get('/:id', { preHandler: [authenticate] }, getLocationByIdController as any)
-    fastify.patch('/:id', {
-        preHandler: [
-            authenticate as any,
-            async (request: FastifyRequest<{ Body: UpdateLocationDTO }>, reply) => {
-                const result = updateLocationSchema.body.safeParse(request.body)
-                if (!result.success) {
-                    return reply.status(400).send({
-                        message: "Update location failed",
-                        errors: result.error.issues
-                    })
-                }
-                request.body = result.data
-            }
-        ]
-    }, updateLocationController as any)
-    fastify.delete('/:id', { preHandler: [authenticate] }, deleteLocationController as any)
-}
+  fastify.post(
+    "/",
+    {
+      preHandler: [
+        authenticate as any,
+        async (request: FastifyRequest<{ Body: CreateLocationDTO }>, reply) => {
+          const result = createLocationSchema.body.safeParse(request.body);
+          if (!result.success) {
+            return reply.status(400).send({
+              message: "Create location failed",
+              errors: result.error.issues,
+            });
+          }
+          request.body = result.data;
+        },
+      ],
+    },
+    createLocationController,
+  );
+  fastify.get("/", { preHandler: [authenticate] }, getLocationsController);
+  fastify.get(
+    "/:id",
+    { preHandler: [authenticate] },
+    getLocationByIdController as any,
+  );
+  fastify.patch(
+    "/:id",
+    {
+      preHandler: [
+        authenticate as any,
+        async (request: FastifyRequest<{ Body: UpdateLocationDTO }>, reply) => {
+          const result = updateLocationSchema.body.safeParse(request.body);
+          if (!result.success) {
+            return reply.status(400).send({
+              message: "Update location failed",
+              errors: result.error.issues,
+            });
+          }
+          request.body = result.data;
+        },
+      ],
+    },
+    updateLocationController as any,
+  );
+  fastify.delete(
+    "/:id",
+    { preHandler: [authenticate] },
+    deleteLocationController as any,
+  );
+  fastify.post(
+    "/:id/photos",
+    { preHandler: [authenticate] },
+    uploadLocationPhotoController as any,
+  );
+  fastify.delete(
+    '/:id/photos/:photoId',
+    { preHandler: [authenticate] },
+    deletePhotoController as any
+)
+};

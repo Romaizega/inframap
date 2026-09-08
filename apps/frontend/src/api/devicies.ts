@@ -44,3 +44,17 @@ export const deleteDevice = async (id: string) => {
     const result = await api.delete(`/devices/${id}`)
     return result.data
 }
+
+export const uploadDEvicePhoto = async (id: string, file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const result = await api.post(`/devices/${id}/photos`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return result.data
+}
+
+export const deletePhotoDEvice = async (deviceId: string, photoId: string) => {
+    const result = await api.delete(`/devices/${deviceId}/photos/${photoId}`)
+    return result.data
+}
