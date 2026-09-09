@@ -8,6 +8,7 @@ import jwt from "@fastify/jwt";
 import "./queue/worker";
 import { startScheduler } from "./queue/scheduler";
 import { eventRoutes } from "./modules/events/routes";
+import { webHookRoutes } from "./modules/webhooks/webhook_routes";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import fastifyStatic from "@fastify/static";
@@ -52,6 +53,7 @@ const start = async () => {
     await app.register(locationRoutes, { prefix: "/locations" });
     await app.register(logRoutes);
     await app.register(eventRoutes);
+    await app.register(webHookRoutes, { prefix: "/webhooks" });
 
     await startScheduler();
     await app.listen({ port: 3001, host: "0.0.0.0" });
