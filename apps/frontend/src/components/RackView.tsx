@@ -212,7 +212,8 @@ export default function RackView({ devices }: RackViewProps) {
       <DndContext onDragEnd={handleDragEnd}>
         <div
           className="
-            overflow-hidden
+          max-h-80
+          overflow-y-auto
             rounded-md
             border-2
             border-slate-700
