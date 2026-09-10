@@ -9,6 +9,7 @@ import {
 import EditLocation from "../components/modals/EditLocationModal";
 import type { Device } from "../types/device";
 import RackView from "../components/RackView";
+import SiteMap from "../components/map/SiteMap";
 
 import {
   MapPin,
@@ -127,6 +128,12 @@ export default function LocationDetails() {
       </div>
     );
   }
+  const getStatusColor = (status: string) => {
+    if (status === "ONLINE") return "text-green-400";
+    if (status === "DEGRADED") return "text-orange-400";
+    if (status === "OFFLINE") return "text-red-400";
+    return "text-slate-400";
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 p-8 text-white">
@@ -338,6 +345,38 @@ export default function LocationDetails() {
               {location.description || "No description provided."}
             </p>
           </section>
+          {/* DEVICES */}
+          <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-400">
+              Devices
+            </h2>
+
+            {location.devices?.length === 0 ? (
+              <p className="text-sm text-slate-500">
+                No devices at this location
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {location.devices?.map((device) => (
+                  <div
+                    key={device.id}
+                    onClick={() => navigate(`/devices/${device.id}`)}
+                    className="flex items-center justify-between rounded-md border border-slate-700 bg-slate-950 px-4 py-3 cursor-pointer hover:border-slate-600 transition"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">{device.name}</p>
+                      <p className="text-xs text-slate-500">{device.type}</p>
+                    </div>
+                    <span
+                      className={`text-xs font-medium ${getStatusColor(device.status)}`}
+                    >
+                      {device.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
 
           {/* PHOTOS */}
 
@@ -484,49 +523,10 @@ export default function LocationDetails() {
               Map
             </h2>
 
-            {location.latitude !== null && location.longitude !== null ? (
-              <div
-                className="
-                    flex
-                    h-44
-                    items-center
-                    justify-center
-                    rounded-md
-                    border border-slate-800
-                    bg-slate-950
-                  "
-              >
-                <div className="text-center">
-                  <MapPin
-                    size={28}
-                    className="
-                        mx-auto
-                        mb-2
-                        text-cyan-400
-                      "
-                  />
-
-                  <p className="text-sm text-slate-300">{location.latitude}</p>
-
-                  <p className="text-sm text-slate-300">{location.longitude}</p>
-                </div>
-              </div>
+            {location.latitude && location.longitude ? (
+              <SiteMap locations={[location]} />
             ) : (
-              <div
-                className="
-                    flex
-                    h-44
-                    items-center
-                    justify-center
-                    rounded-md
-                    border border-slate-800
-                    bg-slate-950
-                  "
-              >
-                <p className="text-sm text-slate-500">
-                  Coordinates are not available
-                </p>
-              </div>
+              <div>Coordinates are not available</div>
             )}
           </section>
 
